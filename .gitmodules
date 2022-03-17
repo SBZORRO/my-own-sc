@@ -1,0 +1,6 @@
+[submodule "licensing-service"]
+	path = licensing-service
+	url = git@github.com:SBZORRO/licensing-service.git
+[submodule "configserver"]
+	path = configserver
+	url = git@github.com:SBZORRO/configserver.git

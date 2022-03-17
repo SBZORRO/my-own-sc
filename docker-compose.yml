@@ -1,0 +1,18 @@
+version: '3'
+services:
+  licensingservice:
+    build: ./
+    ports:
+    - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      SPRING_CLOUD_CONFIG_URI: http://configserver:8071
+  configserver:
+    image: ./
+    ports:
+    - 8071:8071
+    environment:
+      ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
+    networks:
+      backend:
+        aliases: null
