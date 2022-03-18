@@ -1,25 +1,26 @@
-version: '3'
+version: '3.8'
 services:
-   configserver:
-      build: ./configserver
-      ports:
-      - 8071:8071
-      environment:
-         ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
-   licensingservice:
-      build: ./licensing-service
-      depends_on: 
-         configserver:
-            condition: service_healthy
-      ports:
-      - 8080:8080
-      environment:
-         SPRING_PROFILES_ACTIVE: dev
-         CONFIG_HOST: configserver
-
-#    networks:
-# ----------------
-# Orphan comments:
-# ----------------
-# Was at begin of line:20 :#      backend:
-# Was at begin of line:21 :#        aliases: null
+  configserver:
+    build: configserver
+    restart: always
+    ports:
+    - 8071:8071
+    environment:
+      ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
+#    healthcheck:
+#      test:  ["CMD", "curl -f http://localhost:8071/actuator/health || exit 1"]
+#      interval: 10s
+#      timeout: 10s
+#      retries: 5
+#      start_period: 40s
+  licensingservice:
+    build: licensing-service
+    restart: always
+#    depends_on:
+#      configserver:
+#        condition: service_healthy
+    ports:
+    - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      CONFIG_HOST: configserver
