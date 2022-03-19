@@ -7,32 +7,40 @@ services:
     - 8071:8071
     environment:
       ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
-#    healthcheck:
-#      test:  ["CMD", "curl -f http://localhost:8071/actuator/health || exit 1"]
-#      interval: 10s
-#      timeout: 10s
-#      retries: 5
-#      start_period: 40s
+    healthcheck:
+      test:
+      - CMD
+      - curl -f http://configserver:8071/actuator/health || exit 1
+      start_period: 40s
+      interval: 10s
+      timeout: 10s
+      retries: 5
   licensingservice:
     build: licensing-service
     restart: always
-#    depends_on:
-#      configserver:
+    depends_on:
+      configserver:
+        condition: service_started
 #        condition: service_healthy
     ports:
     - 8080:8080
     environment:
       SPRING_PROFILES_ACTIVE: dev
       CONFIG_HOST: configserver
-      REGISTRY_HOST: consul
-  consul:
+      REGISTRY_HOST: consul-server
+  consul-server:
     image: hashicorp/consul:1.11.4
     restart: always
     volumes:
-     - ./server1.json:/consul/config/server1.json:ro
-     - ./certs/:/consul/config/certs/:ro
+    - ./datacenter-deploy/server.json:/consul/config/server.json:ro
     ports:
-      - 8500:8500
-      - 8600:8600/tcp
-      - 8600:8600/udp
+    - 8500:8500
+    - 8600:8600/tcp
+    - 8600:8600/udp
+    command: agent
+  consul-client:
+    image: hashicorp/consul:1.11.4
+    restart: always
+    volumes:
+    - ./datacenter-deploy/client.json:/consul/config/client.json:ro
     command: agent
