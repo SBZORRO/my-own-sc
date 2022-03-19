@@ -15,6 +15,18 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
+  gateway:
+    build: gateway
+    restart: always
+    ports:
+    - 8072:8072
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+      CONFIG_HOST: configserver
+      REGISTRY_HOST: consul-server
+    depends_on:
+      configserver:
+        condition: service_started
   licensingservice:
     build: licensing-service
     restart: always
