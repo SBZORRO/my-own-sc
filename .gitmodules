@@ -4,3 +4,6 @@
 [submodule "configserver"]
 	path = configserver
 	url = git@github.com:SBZORRO/configserver.git
+[submodule "gateway"]
+	path = gateway
+	url = git@github.com:SBZORRO/gateway.git
