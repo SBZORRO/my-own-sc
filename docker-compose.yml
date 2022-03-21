@@ -5,17 +5,15 @@ services:
     restart: always
     ports:
     - 8071:8071
-    environment:
-      ENCRYPT_KEY: fje83Ki8403Iod87dne7Yjsl3THueh48jfuO9j4U2hf64Lo
-    healthcheck:
-      test:
-      - CMD
-      - curl -f http://configserver:8071/actuator/health || exit 1
-      start_period: 40s
-      interval: 10s
-      timeout: 10s
-      retries: 5
-  gateway:
+#    environment:
+#      PORT: 8071
+#    healthcheck:
+#      test: ["CMD", "curl", "-f", "http://localhost:8071/actuator/health", "||", "exit", "1"]
+#      start_period: 40s
+#      interval: 5s
+#      timeout: 30s
+#      retries: 5
+  gatewayserver:
     build: gateway
     restart: always
     ports:
@@ -26,14 +24,15 @@ services:
       REGISTRY_HOST: consul-server
     depends_on:
       configserver:
-        condition: service_started
+        condition: service_healthy
   licensingservice:
     build: licensing-service
     restart: always
     depends_on:
       configserver:
-        condition: service_started
-#        condition: service_healthy
+        condition: service_healthy
+      gatewayserver:
+        condition: service_healthy
     ports:
     - 8080:8080
     environment:
